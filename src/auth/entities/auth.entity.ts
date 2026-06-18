@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Shedule } from '../../shedules/entities/shedule.entity';
+import { IsArray } from 'class-validator';
 
 @Entity('users')
 export class User {
@@ -35,10 +36,11 @@ export class User {
   @Column('text', {
     default: 'user',
   })
-  role!: string;
+  @IsArray()
+  roles?: string[];
 
-  @OneToMany(() => Shedule, (Shedule) => Shedule.user)
-  shedule!: string;
+  @OneToMany(() => Shedule, (Shedule) => Shedule.user )
+  shedule!: Shedule[];
 
   @BeforeInsert()
   checkFiledsbeforeInsert() {

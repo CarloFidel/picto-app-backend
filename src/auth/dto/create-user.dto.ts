@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsOptional,
   isString,
   IsString,
   Matches,
@@ -32,5 +33,6 @@ export class CreateUserDto {
   password!: string;
 
   @IsString()
-  role!: string;
+  @IsOptional()
+  roles!: string[];
 }

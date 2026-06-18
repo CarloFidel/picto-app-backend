@@ -42,7 +42,7 @@ export class AuthService {
           id: user.id,
           name: user.name,
           lastName: user.lastName,
-          role: user.role,
+          roles: user.roles!,
         }),
       };
     } catch (error: any) {
@@ -61,7 +61,7 @@ export class AuthService {
         name: true,
         lastName: true,
         id: true,
-        role: true
+        roles: true,
       },
     });
 
@@ -76,14 +76,14 @@ export class AuthService {
       name: user.name,
       lastName: user.lastName,
       email: user.email,
-      role: user.role,
+      roles: user.roles,
 
       token: this.getJwToken({
         email: user.email,
         id: user.id,
         name: user.name,
         lastName: user.lastName,
-        role: user.role
+        roles: user.roles!,
       }),
     };
   }
@@ -93,7 +93,10 @@ export class AuthService {
   }
 
   async findOne(id: string) {
-    const user = await this.userRepository.findOneBy({ id: id });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: { shedule: true },
+    });
 
     if (!user) throw new NotFoundException(`User with ${id} not found`);
 

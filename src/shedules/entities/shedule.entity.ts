@@ -1,5 +1,11 @@
-import { MaxLength, MinLength } from 'class-validator';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../../auth/entities/auth.entity';
 
 @Entity()
@@ -8,10 +14,20 @@ export class Shedule {
   id!: string;
 
   @Column('text')
-  @MinLength(2)
-  @MaxLength(50)
   title!: string;
 
-  @ManyToOne(() => User, (User) => User.shedule)
-  user!: string;
+  @ManyToOne(() => User, (User) => User.shedule, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  user!: User;
+
+  @BeforeInsert()
+  checkTitleBeforeInsert() {
+    this.title = this.title.toLowerCase().trim();
+  }
+  @BeforeUpdate()
+  checkTitleBeforeUpdate() {
+    this.title = this.title.toLowerCase().trim();
+  }
 }
