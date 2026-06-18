@@ -4,9 +4,11 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../auth/entities/auth.entity';
+import { ScheduleItem } from '../../schedule_items/entities/schedule_item.entity';
 
 @Entity()
 export class Shedule {
@@ -21,6 +23,9 @@ export class Shedule {
     onDelete: 'CASCADE',
   })
   user!: User;
+
+  @OneToMany(() => ScheduleItem, (ScheduleItem) => ScheduleItem.id)
+  sheduleItem!: ScheduleItem[];
 
   @BeforeInsert()
   checkTitleBeforeInsert() {

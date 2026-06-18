@@ -105,6 +105,11 @@ export class AuthService {
 
   remove(id: string) {
     const user = this.findOne(id);
+
+    if ( !user ) {
+      throw new BadRequestException(`No user with ${id} founded`)
+    }
+
     this.userRepository.delete({ id });
     return {
       status: 200,
