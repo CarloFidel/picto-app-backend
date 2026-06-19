@@ -8,7 +8,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../auth/entities/auth.entity';
-import { ScheduleItem } from '../../schedule_items/entities/schedule_item.entity';
+import { VisualItem } from '../../visual_items/entities/visual_item.entity';
+import { ScheduleItem } from '../../schedule_item/entities/schedule_item.entity';
 
 @Entity()
 export class Shedule {
@@ -24,8 +25,14 @@ export class Shedule {
   })
   user!: User;
 
-  @OneToMany(() => ScheduleItem, (ScheduleItem) => ScheduleItem.id)
-  sheduleItem!: ScheduleItem[];
+  @OneToMany(() => ScheduleItem, (scheduleItem) => scheduleItem.schedule, {
+    cascade: true,
+
+  })
+  scheduleItems!: ScheduleItem[];
+
+  @OneToMany(() => VisualItem, (VisualItem) => VisualItem.shedule)
+  visualItem!: VisualItem[];
 
   @BeforeInsert()
   checkTitleBeforeInsert() {

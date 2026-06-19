@@ -13,15 +13,16 @@ import { UpdateSheduleDto } from './dto/update-shedule.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../auth/entities/auth.entity';
 import { Auth } from '../auth/decorators/auth.decorator';
+import { SaveAllDto } from './dto/save-all-shedule.dto';
 
 @Controller('shedules')
 export class ShedulesController {
   constructor(private readonly shedulesService: ShedulesService) {}
 
-  @Post('create')
+  @Post('create-all')
   @Auth()
-  create(@Body() createSheduleDto: CreateSheduleDto, @GetUser() user: User) {
-    return this.shedulesService.create(createSheduleDto, user);
+  createFull(@Body() saveAllDto: SaveAllDto, @GetUser() user: User) {
+    return this.shedulesService.createFull(saveAllDto, user);
   }
 
   @Get(':term') //por id o por title
@@ -30,10 +31,10 @@ export class ShedulesController {
     return this.shedulesService.findOneBy(term, user);
   }
 
-  @Get('fromuser/:userId') 
+  @Get('fromuser/:userId')
   @Auth()
-  findAllByUser(@Param('userId') userId: string, @GetUser() user: User) {
-    return this.shedulesService.findAllByUser(userId, user);
+  findAllByUser(@GetUser() user: User) {
+    return this.shedulesService.findAllByUser(user);
   }
 
   @Patch('edit/:id')

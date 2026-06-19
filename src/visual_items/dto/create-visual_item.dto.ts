@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { VisualItemTypes } from '../interfaces/visual-items.interface';
 
 export class CreateVisualItemDto {

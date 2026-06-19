@@ -3,17 +3,15 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ShedulesModule } from './shedules/shedules.module';
-import { ScheduleItemsModule } from './schedule_items/schedule_items.module';
 import { VisualItemsModule } from './visual_items/visual_items.module';
+import { ScheduleItemModule } from './schedule_item/schedule_item.module';
 
 @Module({
   imports: [
     AuthModule,
 
     ShedulesModule,
-    
-    ScheduleItemsModule,
-    
+
     ConfigModule.forRoot(),
 
     TypeOrmModule.forRoot({
@@ -29,7 +27,7 @@ import { VisualItemsModule } from './visual_items/visual_items.module';
 
     VisualItemsModule,
 
-
+    ScheduleItemModule,
   ],
 })
 export class AppModule {}

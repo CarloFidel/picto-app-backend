@@ -2,23 +2,21 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Shedule } from '../../shedules/entities/shedule.entity';
 import { VisualItem } from '../../visual_items/entities/visual_item.entity';
 
-@Entity()
+@Entity('schedule_items')
 export class ScheduleItem {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('integer')
+  @Column()
   position!: number;
 
-  @ManyToOne(() => Shedule, (Shedule) => Shedule.id, {
-    eager: true,
+  @ManyToOne(() => Shedule, (schedule) => schedule.scheduleItems, {
     onDelete: 'CASCADE',
   })
-  schedule!: string;
+  schedule!: Shedule;
 
-  @ManyToOne(() => VisualItem, (VisualItem) => VisualItem.id, {
+  @ManyToOne(() => VisualItem, (visualItem) => visualItem.scheduleItems, {
     eager: true,
-    onDelete: 'CASCADE'
   })
-  visual_item!: VisualItem;
+  visualItem!: VisualItem;
 }

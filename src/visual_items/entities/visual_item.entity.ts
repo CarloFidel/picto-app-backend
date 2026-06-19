@@ -5,7 +5,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ScheduleItem } from '../../schedule_items/entities/schedule_item.entity';
+import { Shedule } from '../../shedules/entities/shedule.entity';
+import { ScheduleItem } from '../../schedule_item/entities/schedule_item.entity';
 
 @Entity()
 export class VisualItem {
@@ -13,16 +14,21 @@ export class VisualItem {
   id!: string;
 
   @Column('text', {
-    nullable: false
+    nullable: false,
   })
   url!: string;
 
-  @Column()
+  @Column('text')
   type!: string;
 
   @Column()
   word!: string;
 
-  @OneToMany(() => ScheduleItem, (ScheduleItem) => ScheduleItem.id)
-  sheduleItem!: ScheduleItem;
+  @ManyToOne(() => Shedule, (Shedule) => Shedule.visualItem, {
+    onDelete: 'CASCADE'
+  })
+  shedule!: Shedule;
+
+  @OneToMany(() => ScheduleItem, (scheduleItem) => scheduleItem.visualItem)
+  scheduleItems!: ScheduleItem[];
 }
