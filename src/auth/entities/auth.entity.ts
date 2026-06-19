@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Shedule } from '../../shedules/entities/shedule.entity';
 import { IsArray } from 'class-validator';
+import { Photo } from '../../photo/entities/photo.entity';
 
 @Entity('users')
 export class User {
@@ -41,6 +42,9 @@ export class User {
 
   @OneToMany(() => Shedule, (Shedule) => Shedule.user )
   shedule!: Shedule[];
+
+  @OneToMany(() => Photo, (Photo) => Photo.user )
+  photo!: Photo[];
 
   @BeforeInsert()
   checkFiledsbeforeInsert() {

@@ -6,6 +6,8 @@ import { ShedulesModule } from './shedules/shedules.module';
 import { VisualItemsModule } from './visual_items/visual_items.module';
 import { ScheduleItemModule } from './schedule_item/schedule_item.module';
 import { PhotoModule } from './photo/photo.module';
+import { MulterModule } from "@nestjs/platform-express";
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -31,6 +33,12 @@ import { PhotoModule } from './photo/photo.module';
     ScheduleItemModule,
 
     PhotoModule,
+
+    MulterModule.register({
+      dest: './uploads'
+    }),
+
+    CloudinaryModule
   ],
 })
 export class AppModule {}

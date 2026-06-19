@@ -1,34 +1,51 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { PhotoService } from './photo.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
+import { UploadApiResponse } from 'cloudinary';
+import { fileFilter } from './helper/fileFilte';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../auth/entities/auth.entity';
 import { CreatePhotoDto } from './dto/create-photo.dto';
-import { UpdatePhotoDto } from './dto/update-photo.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
 
 @Controller('photo')
 export class PhotoController {
   constructor(private readonly photoService: PhotoService) {}
 
-  @Post()
-  create(@Body() createPhotoDto: CreatePhotoDto) {
-    return this.photoService.create(createPhotoDto);
-  }
+  @Post('upload')
+  @Auth()
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: fileFilter,
+      storage: memoryStorage(),
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  async upLoadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser() user: User,
+    @Body() createPhotoDto: CreatePhotoDto,
+  ) {
+    const uploadResult: UploadApiResponse = await this.photoService.uploadImage(
+      file,
+      user,
+      createPhotoDto,
+    );
 
-  @Get()
-  findAll() {
-    return this.photoService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.photoService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePhotoDto: UpdatePhotoDto) {
-    return this.photoService.update(+id, updatePhotoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.photoService.remove(+id);
+    return {
+      url: uploadResult.secure_url,
+      message: 'Picture loaded correctly',
+    };
   }
 }
