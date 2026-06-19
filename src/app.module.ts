@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ShedulesModule } from './shedules/shedules.module';
 import { VisualItemsModule } from './visual_items/visual_items.module';
 import { ScheduleItemModule } from './schedule_item/schedule_item.module';
+import { PhotoModule } from './photo/photo.module';
 
 @Module({
   imports: [
@@ -28,6 +29,8 @@ import { ScheduleItemModule } from './schedule_item/schedule_item.module';
     VisualItemsModule,
 
     ScheduleItemModule,
+
+    PhotoModule,
   ],
 })
 export class AppModule {}
