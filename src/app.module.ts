@@ -3,13 +3,18 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ShedulesModule } from './shedules/shedules.module';
+import { VisualItemsModule } from './visual_items/visual_items.module';
+import { ScheduleItemModule } from './schedule_item/schedule_item.module';
+import { PhotoModule } from './photo/photo.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
     AuthModule,
 
     ShedulesModule,
-    
+
     ConfigModule.forRoot(),
 
     TypeOrmModule.forRoot({
@@ -23,6 +28,13 @@ import { ShedulesModule } from './shedules/shedules.module';
       synchronize: true,
     }),
 
+    VisualItemsModule,
+
+    ScheduleItemModule,
+
+    PhotoModule,
+
+    CloudinaryModule,
   ],
 })
 export class AppModule {}

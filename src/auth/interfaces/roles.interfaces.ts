@@ -1,4 +1,4 @@
 export enum ValidRoles {
-  therap = 'therap',
+  therapist = 'therapist',
   user = 'user',
 }
