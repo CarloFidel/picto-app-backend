@@ -17,7 +17,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Picto RESTful API')
-    .setDescription('API for managing pictograms, images, and visual scheduling in the Picto application.')
+    .setDescription(
+      'API for managing pictograms, images, and visual scheduling in the Picto application.',
+    )
     .setVersion('1.0')
     .addTag('pictograms')
     .build();
