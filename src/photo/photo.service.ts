@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { UploadApiResponse, v2 as cloudinary } from 'cloudinary';
 import { User } from '../auth/entities/auth.entity';
@@ -59,12 +60,22 @@ export class PhotoService {
     }
   }
 
-  private async findAllfromUser(user: User) {
+  async findAllfromUser(user: User) {
     const photos = await this.photoRepostory.find({
       where: { user: { id: user.id } },
     });
     console.log(photos);
     return photos;
+  }
+
+  async findOne(photoId: string) {
+    const photo = await this.photoRepostory.findOneBy({ id: photoId });
+
+    if (!photo) {
+      throw new NotFoundException(`No phohto founded with id ${photoId}`);
+    }
+    
+    return photo;
   }
 
   private handleDBError(error: any): never {
