@@ -96,10 +96,12 @@ export class ShedulesService {
   async findAllByUser(user: User) {
     const schedule = await this.sheuleRepository.find({
       where: { user: { id: user.id } },
-      relations: { user: true },
+      //relations: { user: true },
     });
 
-    return schedule;
+    const { password, ...userData } = user;
+
+    return { schedule, userData };
   }
 
   async update(id: string, updateSheduleDto: UpdateSheduleDto, user: User) {
