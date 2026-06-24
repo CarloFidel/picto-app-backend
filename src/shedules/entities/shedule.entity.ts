@@ -42,7 +42,7 @@ export class Shedule {
     default: null,
   })
   @ManyToOne(() => User, (User) => User.shedule, {
-    eager: true,
+    //eager: true,
     onDelete: 'CASCADE',
   })
   user!: User;
