@@ -31,6 +31,7 @@ export class VisualItem {
 
   @ApiProperty({ type: () => Shedule, description: 'Schedule associated to this visual item' })
   @ManyToOne(() => Shedule, (Shedule) => Shedule.visualItem, {
+    eager: true,
     onDelete: 'CASCADE',
   })
   shedule!: Shedule;

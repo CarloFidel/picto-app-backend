@@ -11,6 +11,8 @@ export class ScheduleItem {
   position!: number;
 
   @ManyToOne(() => Shedule, (schedule) => schedule.scheduleItems, {
+    eager: true,
+
     onDelete: 'CASCADE',
   })
   schedule!: Shedule;
