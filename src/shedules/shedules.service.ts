@@ -96,7 +96,7 @@ export class ShedulesService {
   async findAllByUser(user: User) {
     const schedule = await this.sheuleRepository.find({
       where: { user: { id: user.id } },
-      //relations: { user: true },
+      relations: { scheduleItems: { visualItem: true } },
     });
 
     const { password, ...userData } = user;
