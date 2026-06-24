@@ -64,11 +64,11 @@ export class PhotoService {
     const photos = await this.photoRepostory.find({
       where: { user: { id: user.id } },
     });
-    console.log(photos);
     return photos;
   }
 
   async findOne(photoId: string) {
+    
     const photo = await this.photoRepostory.findOneBy({ id: photoId });
 
     if (!photo) {

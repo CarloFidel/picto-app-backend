@@ -47,7 +47,7 @@ export class ShedulesController {
   @ApiResponse({ status: 401, description: 'Unauthorized: authentication required or invalid token'})
   @ApiResponse({ status: 403, description: 'Forbidden: user not allowed to access these schedules'})
   @ApiResponse({ status: 500, description: 'Internal server error while retrieving user schedules'})
-  @Get('fromuser/:userId')
+  @Get('fromuser/')
   @Auth()
   findAllByUser(@GetUser() user: User) {
     return this.shedulesService.findAllByUser(user);
