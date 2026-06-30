@@ -4,6 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Auth } from './decorators/auth.decorator';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GetUser } from './decorators/get-user.decorator';
+import { User } from './entities/auth.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -40,7 +42,7 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized: authentication required' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error while retrieving user' })
-  @Get(':id')
+  @Get('oneUser')
   @Auth()
   findOne(@Param('id') id: string) {
     return this.authService.findOne(id);
@@ -50,9 +52,9 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized: authentication required' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error while deleting user' })
-  @Delete(':id')
+  @Delete('user')
   @Auth()
-  remove(@Param('id') id: string) {
-    return this.authService.remove(id);
+  remove(@GetUser() user: User) {
+    return this.authService.remove(user);
   }
 }

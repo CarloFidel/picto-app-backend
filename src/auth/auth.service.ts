@@ -103,14 +103,14 @@ export class AuthService {
     return user;
   }
 
-  remove(id: string) {
-    const user = this.findOne(id);
+  async remove(user: User) {
+    const existUser = await this.findOne(user.id);
 
-    if ( !user ) {
-      throw new BadRequestException(`No user with ${id} founded`)
+    if (!existUser) {
+      throw new BadRequestException(`No user with ${user.id} founded`);
     }
 
-    this.userRepository.delete({ id });
+   await this.userRepository.delete({ id: user.id });
     return {
       status: 200,
       message: 'Deleted succesfull',
