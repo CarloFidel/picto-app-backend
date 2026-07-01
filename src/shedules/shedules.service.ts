@@ -4,7 +4,6 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateSheduleDto } from './dto/create-shedule.dto';
 import { UpdateSheduleDto } from './dto/update-shedule.dto';
 import { DataSource, Repository } from 'typeorm';
 import { Shedule } from './entities/shedule.entity';

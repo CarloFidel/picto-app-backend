@@ -68,14 +68,42 @@ export class PhotoService {
   }
 
   async findOne(photoId: string) {
-    
     const photo = await this.photoRepostory.findOneBy({ id: photoId });
 
     if (!photo) {
       throw new NotFoundException(`No phohto founded with id ${photoId}`);
     }
-    
+
     return photo;
+  }
+
+  async delete(photoId: string) {
+    const photo = await this.photoRepostory.findOneBy({ id: photoId });
+
+    if (!photo) {
+      throw new NotFoundException(`No photo found with id ${photoId}`);
+    }
+
+    await this.photoRepostory.delete({ id: photo?.id });
+
+    return {
+      status: 200,
+      message: 'Borrado con éxito',
+    };
+  }
+  async edit(createPhotoDto: CreatePhotoDto, photoId: string) {
+    const photo = await this.photoRepostory.findOneBy({ id: photoId });
+
+    if (!photo) {
+      throw new NotFoundException(`No photo found with id ${photoId}`);
+    }
+    //Aquí lo hago así porque el create es igual a update
+    await this.photoRepostory.update({ id: photoId }, createPhotoDto);
+
+    return {
+      status: 200,
+      message: 'Foto actualizada correctamente',
+    };
   }
 
   private handleDBError(error: any): never {

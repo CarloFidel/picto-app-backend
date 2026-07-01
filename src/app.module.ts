@@ -8,6 +8,7 @@ import { ScheduleItemModule } from './schedule_item/schedule_item.module';
 import { PhotoModule } from './photo/photo.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { IaModule } from './ia/ia.module';
 
 @Module({
   imports: [
@@ -36,6 +37,8 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     PhotoModule,
 
     CloudinaryModule,
+
+    IaModule,
   ],
 })
 export class AppModule {}

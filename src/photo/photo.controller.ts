@@ -2,8 +2,10 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  Patch,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -37,10 +39,19 @@ export class PhotoController {
     },
   })
   @ApiResponse({ status: 201, description: 'Photo uploaded successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid request payload or no file uploaded' })
-  @ApiResponse({ status: 401, description: 'Unauthorized: authentication required or invalid token' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request payload or no file uploaded',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized: authentication required or invalid token',
+  })
   @ApiResponse({ status: 413, description: 'File too large' })
-  @ApiResponse({ status: 500, description: 'Internal server error while uploading photo' })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error while uploading photo',
+  })
   @Post('upload')
   @Auth()
   @UseInterceptors(
@@ -73,9 +84,18 @@ export class PhotoController {
     };
   }
 
-  @ApiResponse({ status: 200, description: 'Photos retrieved successfully for the authenticated user' })
-  @ApiResponse({ status: 401, description: 'Unauthorized: authentication required or invalid token' })
-  @ApiResponse({ status: 500, description: 'Internal server error while retrieving user photos' })
+  @ApiResponse({
+    status: 200,
+    description: 'Photos retrieved successfully for the authenticated user',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized: authentication required or invalid token',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error while retrieving user photos',
+  })
   @Get('all-from-user')
   @Auth()
   findAllfromUser(@GetUser() user: User) {
@@ -84,12 +104,42 @@ export class PhotoController {
 
   @ApiResponse({ status: 200, description: 'Photo retrieved successfully' })
   @ApiResponse({ status: 400, description: 'Invalid photo id' })
-  @ApiResponse({ status: 401, description: 'Unauthorized: authentication required or invalid token' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized: authentication required or invalid token',
+  })
   @ApiResponse({ status: 404, description: 'Photo not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error while retrieving photo' })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error while retrieving photo',
+  })
   @Get(':photoId')
   @Auth()
   findOne(@Param('photoId') photoId: string) {
     return this.photoService.findOne(photoId);
+  }
+
+  @ApiResponse({ status: 200, description: 'Photo deleted successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized: authentication required or invalid token' })
+  @ApiResponse({ status: 404, description: 'Photo not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error while deleting photo' })
+  @Delete('delete/:photoId')
+  @Auth()
+  delete(@Param('photoId') photoId: string) {
+    return this.photoService.delete(photoId);
+  }
+
+  @ApiResponse({ status: 200, description: 'Photo updated successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid update payload' })
+  @ApiResponse({ status: 401, description: 'Unauthorized: authentication required or invalid token' })
+  @ApiResponse({ status: 404, description: 'Photo not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error while updating photo' })
+  @Patch('edit/:photoId')
+  @Auth()
+  edit(
+    @Param('photoId') photoId: string,
+    @Body() createPhotoDto: CreatePhotoDto,
+  ) {
+    return this.photoService.edit(createPhotoDto, photoId);
   }
 }
