@@ -91,6 +91,7 @@ export class PhotoService {
       message: 'Borrado con éxito',
     };
   }
+  
   async edit(createPhotoDto: CreatePhotoDto, photoId: string) {
     const photo = await this.photoRepostory.findOneBy({ id: photoId });
 

@@ -39,6 +39,33 @@ export class IaService {
         },
       },
     });
-    return JSON.parse(response.text!);
+
+    const parsed = JSON.parse(response.text! || '{}') as { words?: string[] };
+    const words = Array.isArray(parsed.words) ? parsed.words : [];
+
+    const validatedWords = await Promise.all(
+      words.map(async (word) => {
+        const exists = await this.searchArasaac(word);
+        return exists ? word : null;
+      }),
+    );
+
+    return {
+      words: validatedWords.filter((word): word is string => word !== null),
+    };
+  }
+
+  private async searchArasaac(word: string): Promise<boolean> {
+    try {
+      const url = `https://api.arasaac.org/v1/pictograms/es/search/${encodeURIComponent(word)}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        return false;
+      }
+      const result = await response.json();
+      return Array.isArray(result) && result.length > 0;
+    } catch {
+      return false;
+    }
   }
 }
