@@ -9,6 +9,7 @@ import { PhotoModule } from './photo/photo.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { IaModule } from './ia/ia.module';
+import { CalendarModule } from './calendar/calendar.module';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ import { IaModule } from './ia/ia.module';
     CloudinaryModule,
 
     IaModule,
+
+    CalendarModule,
   ],
 })
 export class AppModule {}

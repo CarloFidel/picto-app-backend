@@ -10,6 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Shedule } from '../../shedules/entities/shedule.entity';
 import { IsArray } from 'class-validator';
 import { Photo } from '../../photo/entities/photo.entity';
+import { Calendar } from '../../calendar/entities/calendar.entity';
 
 @Entity('users')
 export class User {
@@ -51,10 +52,13 @@ export class User {
   @ApiProperty({ type: () => Shedule, isArray: true, description: 'Schedules created by the user' })
   @OneToMany(() => Shedule, (Shedule) => Shedule.user)
   shedule!: Shedule[];
-
+  
   @ApiProperty({ type: () => Photo, isArray: true, description: 'Photos uploaded by the user' })
   @OneToMany(() => Photo, (Photo) => Photo.user)
   photo!: Photo[];
+
+  @OneToMany(() => Calendar, (Calendar) => Calendar.user)
+  events!: Calendar[];
 
   @BeforeInsert()
   checkFiledsbeforeInsert() {
