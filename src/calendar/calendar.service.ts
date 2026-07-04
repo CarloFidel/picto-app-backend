@@ -75,6 +75,13 @@ export class CalendarService {
 
     if (!existing) throw new NotFoundException('No hay eventos encontrados');
 
+    if (!sheduleId || sheduleId.length === 0) {
+      await this.calendarRepository.delete(existing.id);
+      return {
+        message: 'Evento eliminado con éxito',
+      };
+    }
+
     try {
       await this.calendarRepository.update(
         { id: existing.id },
