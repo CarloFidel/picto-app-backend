@@ -26,8 +26,11 @@ export class CalendarService {
       return await this.update(createCalendarDto, user);
     }
 
-    if (!createCalendarDto.sheduleId || createCalendarDto.sheduleId.length === 0) {
-      throw new BadRequestException('No se puede crear un evento sin horarios');
+    if (
+      !createCalendarDto.sheduleId ||
+      createCalendarDto.sheduleId.length === 0
+    ) {
+      return;
     }
 
     try {
