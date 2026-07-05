@@ -56,11 +56,6 @@ export class CalendarService {
         where: { user: { id: user.id } },
       });
 
-      if (events.length === 0) {
-        return {
-          message: 'No se encontró ningún evento',
-        };
-      }
 
       return events;
     } catch (error: any) {
