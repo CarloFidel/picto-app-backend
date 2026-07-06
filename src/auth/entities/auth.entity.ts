@@ -11,6 +11,7 @@ import { Shedule } from '../../shedules/entities/shedule.entity';
 import { IsArray } from 'class-validator';
 import { Photo } from '../../photo/entities/photo.entity';
 import { Calendar } from '../../calendar/entities/calendar.entity';
+import { Article } from '../../articles/entities/article.entity';
 
 @Entity('users')
 export class User {
@@ -77,6 +78,9 @@ export class User {
 
   @OneToMany(() => Calendar, (Calendar) => Calendar.user)
   events!: Calendar[];
+
+  @OneToMany(() => Article, (Article) => Article.user)
+  article!: Calendar[];
 
   @BeforeInsert()
   checkFiledsbeforeInsert() {

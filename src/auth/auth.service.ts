@@ -66,10 +66,10 @@ export class AuthService {
     });
 
     if (!user)
-      throw new UnauthorizedException(`No user with this email ${email}`);
+      throw new UnauthorizedException(`No hay usuario con el email ${email}`);
 
     if (!bcrypt.compareSync(password, user.password))
-      throw new UnauthorizedException('Credentials are not valid (passowrd)');
+      throw new UnauthorizedException('La contraseña es incorrecta');
 
     return {
       id: user.id,
