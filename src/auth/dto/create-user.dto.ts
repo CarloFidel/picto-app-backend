@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsEmail,
   IsOptional,
   IsString,
@@ -38,5 +39,7 @@ export class CreateUserDto {
 
   @ApiProperty({ description: 'Roles assigned to the user', example: ['user'], required: false })
   @IsOptional()
-  roles!: string[];
+  @IsArray()
+  @IsString({ each: true })
+  roles?: string[];
 }
