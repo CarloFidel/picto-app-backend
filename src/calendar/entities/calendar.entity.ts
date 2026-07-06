@@ -12,6 +12,9 @@ export class Calendar {
   @Column('simple-array', { nullable: false })
   sheduleId!: string[];
 
-  @ManyToOne(() => User, (User) => User.events)
+  @ManyToOne(() => User, (User) => User.events, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   user!: User;
 }
