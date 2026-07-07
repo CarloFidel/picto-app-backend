@@ -22,7 +22,7 @@ export class Article {
   body!: string;
 
   @ManyToOne(() => User, (User) => User.article, {
-    onDelete: 'CASCADE',
+    eager: true
   })
   user!: User;
 }
