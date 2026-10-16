@@ -22,7 +22,6 @@ export class VisualItemsService {
     const { url } = createVisualItemDto;
     try {
       const existItem = await this.findOne(url);
-      console.log(existItem);
       if (!existItem) {
         const visualItem =
           this.visualItemRepository.create(createVisualItemDto);

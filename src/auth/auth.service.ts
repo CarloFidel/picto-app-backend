@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
+  ConflictException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -123,7 +124,7 @@ export class AuthService {
   }
 
   private handleDBError(error: any): never {
-    if (error.code === '23505') throw new BadRequestException(error.detail);
+    if (error.code === '23505') throw new ConflictException(error.detail);
     throw new InternalServerErrorException('Please check servers logs');
   }
 }
