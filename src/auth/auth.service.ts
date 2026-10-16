@@ -67,7 +67,7 @@ export class AuthService {
     });
 
     if (!user)
-      throw new UnauthorizedException(`No hay usuario con el email ${email}`);
+      throw new NotFoundException(`No hay usuario con el email ${email}`);
 
     if (!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('La contraseña es incorrecta');
