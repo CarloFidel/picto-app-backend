@@ -143,6 +143,7 @@ export class AuthService {
       email: payload.email!,
       lastName: payload.family_name ?? 'Name',
       roles: GoogleToken.roles,
+      avatar: payload.picture ?? ''
     }
 
 
@@ -185,6 +186,7 @@ export class AuthService {
         lastName: user.lastName,
         email: user.email,
         roles: user.roles,
+        avatar: user.avatar,
 
         token: this.getJwToken({
           email: user.email,
