@@ -33,8 +33,7 @@ export class AuthController {
 
   @Post('google')
   loginGoogle(@Body() googleToken: GoogleToken) {
-    return console.log('controller-login-google')
-    //return this.authService.loginGoogle(googleToken);
+    return this.authService.loginGoogle(googleToken);
   }
 
 

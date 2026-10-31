@@ -134,6 +134,14 @@ export class AuthService {
     if (!payload?.sub || !payload.email || payload.email_verified !== true) {
       throw new UnauthorizedException('Token de Google inválido');
     }
+
+    const credentials = {
+      email: payload.email,
+      name: payload.given_name,
+      lastName: payload.family_name
+    }
+
+    return credentials
   }
 
   private getJwToken(payload: JwtPayload) {
