@@ -117,12 +117,13 @@ export class AuthService {
     };
   }
 
-  async loginGoogle(token: GoogleToken) {
+  async loginGoogle(GoogleToken: GoogleToken) {
 
     const client = new OAuth2Client()
+    const {token, roles} = GoogleToken
 
     const ticket = await client.verifyIdToken({
-      idToken: token.token,
+      idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
 
@@ -141,12 +142,12 @@ export class AuthService {
       name: payload.given_name ?? 'Provisional',
       email: payload.email!,
       lastName: payload.family_name ?? 'Name',
-      roles: [ValidRoles.user],
+      roles: GoogleToken.roles,
     }
 
 
     const user = await this.userRepository.findOne({
-      where: { email: payload.email },
+      where: { email: userData.email },
       select: {
         email: true,
         name: true,

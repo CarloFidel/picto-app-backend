@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { IsArray, IsOptional, IsString } from "class-validator";
 
 export class GoogleToken {
   @ApiProperty({
@@ -8,4 +8,10 @@ export class GoogleToken {
   })
   @IsString()
   token!: string;
+
+  @ApiProperty({ description: 'Roles assigned to the user', example: ['user'], required: false })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  roles?: string[];
 }
