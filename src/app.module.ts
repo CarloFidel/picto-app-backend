@@ -10,7 +10,6 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { IaModule } from './ia/ia.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { ArticlesModule } from './articles/articles.module';
-import { GoogleAuthModule } from './google-auth/google-auth.module';
 
 @Module({
   imports: [
@@ -45,9 +44,6 @@ import { GoogleAuthModule } from './google-auth/google-auth.module';
     CalendarModule,
 
     ArticlesModule,
-
-    GoogleAuthModule,
-
   ],
 })
 export class AppModule {}

@@ -6,6 +6,7 @@ import { Auth } from './decorators/auth.decorator';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetUser } from './decorators/get-user.decorator';
 import { User } from './entities/auth.entity';
+import { GoogleToken } from './dto/google-token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -29,6 +30,12 @@ export class AuthController {
   login(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto);
   }
+
+    @Post('login')
+  loginGoogle(@Body() googleToken: GoogleToken) {
+    return this.authService.loginGoogle(googleToken);
+  }
+
 
   @ApiResponse({ status: 200, description: 'List of users retrieved successfully' })
   @ApiResponse({ status: 500, description: 'Internal server error while retrieving users' })
