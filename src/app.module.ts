@@ -28,7 +28,7 @@ import { ArticlesModule } from './articles/articles.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: process.env.STAGE === 'dev',
+      synchronize: process.env.STAGE === 'prod',
     }),
 
     VisualItemsModule,
