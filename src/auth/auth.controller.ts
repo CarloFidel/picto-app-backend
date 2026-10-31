@@ -31,6 +31,20 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  @ApiResponse({
+    status: 200,
+    description: 'Google ID token validated successfully.',
+    schema: {
+      example: {
+        email: 'john.doe@example.com',
+        name: 'John',
+        lastName: 'Doe',
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Invalid request body.' })
+  @ApiResponse({ status: 401, description: 'Google ID token is invalid or its email is not verified.' })
+  @ApiResponse({ status: 500, description: 'Internal server error while validating the Google token.' })
   @Post('google')
   loginGoogle(@Body() googleToken: GoogleToken) {
     return this.authService.loginGoogle(googleToken);
