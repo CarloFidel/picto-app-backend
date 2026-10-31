@@ -6,11 +6,12 @@ import { Auth } from './decorators/auth.decorator';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetUser } from './decorators/get-user.decorator';
 import { User } from './entities/auth.entity';
+import { GoogleToken } from './dto/google-token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @ApiResponse({ status: 201, description: 'User registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid registration data' })
@@ -29,6 +30,13 @@ export class AuthController {
   login(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto);
   }
+
+  @Post('google')
+  loginGoogle(@Body() googleToken: GoogleToken) {
+    return console.log('controller-login-google')
+    //return this.authService.loginGoogle(googleToken);
+  }
+
 
   @ApiResponse({ status: 200, description: 'List of users retrieved successfully' })
   @ApiResponse({ status: 500, description: 'Internal server error while retrieving users' })

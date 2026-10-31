@@ -16,6 +16,8 @@ import { NotFoundError } from 'rxjs';
 import { STATUS_CODES } from 'http';
 import { JwtPayload } from './interfaces/jwt-payloda.interface';
 import { JwtService } from '@nestjs/jwt';
+import { GoogleToken } from './dto/google-token.dto';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +25,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async create(createAuthDto: CreateUserDto) {
     try {
@@ -111,11 +113,27 @@ export class AuthService {
       throw new BadRequestException(`No user with ${user.id} founded`);
     }
 
-   await this.userRepository.delete({ id: user.id });
+    await this.userRepository.delete({ id: user.id });
     return {
       status: 200,
       message: 'Deleted succesfull',
     };
+  }
+
+  async loginGoogle(token: GoogleToken) {
+    console.log('service auth login google')
+    const client = new OAuth2Client()
+
+    const ticket = await client.verifyIdToken({
+      idToken: token.token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload()
+
+    if (!payload?.sub || !payload.email || payload.email_verified !== true) {
+      throw new UnauthorizedException('Token de Google inválido');
+    }
   }
 
   private getJwToken(payload: JwtPayload) {

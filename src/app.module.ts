@@ -6,7 +6,6 @@ import { ShedulesModule } from './shedules/shedules.module';
 import { VisualItemsModule } from './visual_items/visual_items.module';
 import { ScheduleItemModule } from './schedule_item/schedule_item.module';
 import { PhotoModule } from './photo/photo.module';
-import { MulterModule } from '@nestjs/platform-express';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { IaModule } from './ia/ia.module';
 import { CalendarModule } from './calendar/calendar.module';
@@ -29,7 +28,7 @@ import { ArticlesModule } from './articles/articles.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: process.env.STAGE === 'dev',
     }),
 
     VisualItemsModule,
