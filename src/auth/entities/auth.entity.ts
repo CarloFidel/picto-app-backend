@@ -43,8 +43,14 @@ export class User {
     description: 'Hashed password for the user account',
     example: 'Password1',
   })
-  @Column('text')
-  password!: string;
+  @Column('text', {
+    nullable: true,
+    select: false
+  })
+  password!: string | null;
+
+  @Column('text', {unique: true, nullable: true, name: 'google_sub'})
+  googleSub!: string | null;
 
   @ApiProperty({
     description: 'Whether the user account is active',

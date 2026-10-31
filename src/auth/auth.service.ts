@@ -18,6 +18,7 @@ import { JwtPayload } from './interfaces/jwt-payloda.interface';
 import { JwtService } from '@nestjs/jwt';
 import { GoogleToken } from './dto/google-token.dto';
 import { OAuth2Client } from 'google-auth-library';
+import { ValidRoles } from './interfaces/roles.interfaces';
 
 @Injectable()
 export class AuthService {
@@ -71,7 +72,7 @@ export class AuthService {
     if (!user)
       throw new NotFoundException(`No hay usuario con el email ${email}`);
 
-    if (!bcrypt.compareSync(password, user.password))
+    if (!user.password || !bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('La contraseña es incorrecta');
 
     return {
@@ -89,10 +90,6 @@ export class AuthService {
         roles: user.roles!,
       }),
     };
-  }
-
-  findAll() {
-    return `This action returns all auth`;
   }
 
   async findOne(id: string) {
@@ -121,7 +118,7 @@ export class AuthService {
   }
 
   async loginGoogle(token: GoogleToken) {
-    console.log('service auth login google')
+
     const client = new OAuth2Client()
 
     const ticket = await client.verifyIdToken({
@@ -131,17 +128,68 @@ export class AuthService {
 
     const payload = ticket.getPayload()
 
+
     if (!payload?.sub || !payload.email || payload.email_verified !== true) {
       throw new UnauthorizedException('Token de Google inválido');
     }
 
-    const credentials = {
-      email: payload.email,
-      name: payload.given_name,
-      lastName: payload.family_name
+    const userData = {
+      name: payload.given_name ?? 'Provisional',
+      email: payload.email!,
+      lastName: payload.family_name ?? 'Name',
+      roles: [ValidRoles.user],
     }
 
-    return credentials
+
+    const user = await this.userRepository.findOne({
+      where: { email: payload.email },
+      select: {
+        email: true,
+        name: true,
+        lastName: true,
+        id: true,
+        roles: true,
+      },
+    });
+
+    if (!user) {
+
+      const newUser = this.userRepository.create({
+        ...userData,
+        password: null,
+      });
+
+      await this.userRepository.save(newUser);
+
+      return {
+        ...userData,
+        token: this.getJwToken({
+          id: newUser.id,
+          name: newUser.name,
+          email: newUser.email,
+          lastName: newUser.lastName,
+          roles: newUser.roles!,
+        }),
+      };
+
+    } else {
+
+      return {
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        roles: user.roles,
+
+        token: this.getJwToken({
+          email: user.email,
+          id: user.id,
+          name: user.name,
+          lastName: user.lastName,
+          roles: user.roles!,
+        }),
+      };
+    }
   }
 
   private getJwToken(payload: JwtPayload) {

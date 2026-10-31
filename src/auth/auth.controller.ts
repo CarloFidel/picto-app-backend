@@ -50,14 +50,6 @@ export class AuthController {
     return this.authService.loginGoogle(googleToken);
   }
 
-
-  @ApiResponse({ status: 200, description: 'List of users retrieved successfully' })
-  @ApiResponse({ status: 500, description: 'Internal server error while retrieving users' })
-  @Get('allUsers')
-  findAll() {
-    return this.authService.findAll();
-  }
-
   @ApiResponse({ status: 200, description: 'User retrieved successfully' })
   @ApiResponse({ status: 400, description: 'Invalid user id' })
   @ApiResponse({ status: 401, description: 'Unauthorized: authentication required' })
