@@ -121,6 +121,7 @@ export class AuthService {
   }
 
   async loginGoogle(token: GoogleToken) {
+    console.log('service auth login google')
     const client = new OAuth2Client()
 
     const ticket = await client.verifyIdToken({

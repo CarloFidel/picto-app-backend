@@ -11,7 +11,7 @@ import { GoogleToken } from './dto/google-token.dto';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @ApiResponse({ status: 201, description: 'User registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid registration data' })
@@ -31,9 +31,10 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
-    @Post('login/google')
+  @Post('google')
   loginGoogle(@Body() googleToken: GoogleToken) {
-    return this.authService.loginGoogle(googleToken);
+    return console.log('controller-login-google')
+    //return this.authService.loginGoogle(googleToken);
   }
 
 
