@@ -40,6 +40,7 @@ export class AuthService {
 
       return {
         ...userData,
+        avatar,
         token: this.getJwToken({
           email: user.email,
           id: user.id,
