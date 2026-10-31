@@ -12,13 +12,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/auth.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { NotFoundError } from 'rxjs';
-import { STATUS_CODES } from 'http';
 import { JwtPayload } from './interfaces/jwt-payloda.interface';
 import { JwtService } from '@nestjs/jwt';
 import { GoogleToken } from './dto/google-token.dto';
 import { OAuth2Client } from 'google-auth-library';
-import { ValidRoles } from './interfaces/roles.interfaces';
 
 @Injectable()
 export class AuthService {
@@ -30,11 +27,13 @@ export class AuthService {
 
   async create(createAuthDto: CreateUserDto) {
     try {
-      const { password, ...userData } = createAuthDto;
+      const { password, avatar, ...userData } = createAuthDto;
 
       const user = this.userRepository.create({
         ...userData,
         password: bcrypt.hashSync(password, 10),
+        avatar: createAuthDto.avatar !== '' ? createAuthDto.avatar : ''
+
       });
 
       await this.userRepository.save(user);
@@ -120,7 +119,7 @@ export class AuthService {
   async loginGoogle(GoogleToken: GoogleToken) {
 
     const client = new OAuth2Client()
-    const {token, roles} = GoogleToken
+    const { token, roles } = GoogleToken
 
     const ticket = await client.verifyIdToken({
       idToken: token,

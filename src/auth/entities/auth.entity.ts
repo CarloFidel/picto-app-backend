@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Shedule } from '../../shedules/entities/shedule.entity';
-import { IsArray } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 import { Photo } from '../../photo/entities/photo.entity';
 import { Calendar } from '../../calendar/entities/calendar.entity';
 import { Article } from '../../articles/entities/article.entity';
@@ -65,6 +65,11 @@ export class User {
   @Column('text', { array: true, default: ['user'] })
   @IsArray()
   roles?: string[];
+
+  @Column('text')
+  @IsString()
+  @IsOptional()
+  avatar?: string
 
   @ApiProperty({
     type: () => Shedule,

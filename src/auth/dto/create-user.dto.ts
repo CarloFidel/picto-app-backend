@@ -42,4 +42,10 @@ export class CreateUserDto {
   @IsArray()
   @IsString({ each: true })
   roles?: string[];
+
+  @IsOptional()
+  @IsString()
+  avatar?: string;
+
+
 }
