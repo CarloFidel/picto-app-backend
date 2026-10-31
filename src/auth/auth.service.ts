@@ -126,6 +126,10 @@ export class AuthService {
       audience: process.env.GOOGLE_CLIENT_ID,
     });
 
+    if (!ticket) {
+      throw new UnauthorizedException('Problemas con Google Auth')
+    }
+
     const payload = ticket.getPayload()
 
 
