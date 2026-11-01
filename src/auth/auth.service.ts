@@ -186,7 +186,7 @@ export class AuthService {
         lastName: user.lastName,
         email: user.email,
         roles: user.roles,
-        avatar: user.avatar,
+        avatar: userData.avatar,
 
         token: this.getJwToken({
           email: user.email,
