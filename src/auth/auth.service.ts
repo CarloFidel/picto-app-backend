@@ -30,7 +30,8 @@ export class AuthService {
     try {
       const { password, avatar, roles, ...userData } = createAuthDto;
       const avatarUrl = avatar ?? '';
-      const userRoles = roles ?? [ValidRoles.user]
+      const userRoles = roles?.length ? roles : [ValidRoles.user];
+
 
       const user = this.userRepository.create({
         ...userData,
