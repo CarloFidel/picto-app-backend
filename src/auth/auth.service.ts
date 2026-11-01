@@ -16,6 +16,7 @@ import { JwtPayload } from './interfaces/jwt-payloda.interface';
 import { JwtService } from '@nestjs/jwt';
 import { GoogleToken } from './dto/google-token.dto';
 import { OAuth2Client } from 'google-auth-library';
+import { ValidRoles } from './interfaces/roles.interfaces';
 
 @Injectable()
 export class AuthService {
@@ -27,13 +28,15 @@ export class AuthService {
 
   async create(createAuthDto: CreateUserDto) {
     try {
-      const { password, avatar, ...userData } = createAuthDto;
+      const { password, avatar, roles, ...userData } = createAuthDto;
       const avatarUrl = avatar ?? '';
+      const userRoles = roles ?? [ValidRoles.user]
 
       const user = this.userRepository.create({
         ...userData,
         password: bcrypt.hashSync(password, 10),
         avatar: avatarUrl,
+        roles: userRoles
 
       });
 
@@ -42,6 +45,8 @@ export class AuthService {
       return {
         ...userData,
         avatar,
+        roles: userRoles,
+
         token: this.getJwToken({
           email: user.email,
           id: user.id,
