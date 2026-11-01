@@ -28,11 +28,12 @@ export class AuthService {
   async create(createAuthDto: CreateUserDto) {
     try {
       const { password, avatar, ...userData } = createAuthDto;
+      const avatarUrl = avatar ?? '';
 
       const user = this.userRepository.create({
         ...userData,
         password: bcrypt.hashSync(password, 10),
-        avatar: createAuthDto.avatar !== '' ? createAuthDto.avatar : ''
+        avatar: avatarUrl,
 
       });
 
