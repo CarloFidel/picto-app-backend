@@ -17,6 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import { GoogleToken } from './dto/google-token.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { ValidRoles } from './interfaces/roles.interfaces';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -204,6 +205,25 @@ export class AuthService {
         }),
       };
     }
+  }
+
+  async patchUser(updateUserDto: UpdateUserDto, userFromToken: User) {
+
+    const userEmail = userFromToken.email;
+
+    const existUser = await this.userRepository.findOne({ where: { email: userEmail } });
+
+    if (!existUser) throw new NotFoundException(`User with ${userEmail} not found`);
+
+    await this.userRepository.update(existUser.id, {
+      name: updateUserDto.name,
+      lastName: updateUserDto.lastName,
+      avatar: updateUserDto.avatar,
+    });
+
+    const user = await this.userRepository.findOne({ where: { email: userEmail } });
+
+    return user
   }
 
   private getJwToken(payload: JwtPayload) {

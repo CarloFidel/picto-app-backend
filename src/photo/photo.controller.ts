@@ -63,6 +63,7 @@ export class PhotoController {
       },
     }),
   )
+  
   async upLoadFile(
     @UploadedFile() file: Express.Multer.File,
     @GetUser() user: User,

@@ -1,12 +1,13 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Auth } from './decorators/auth.decorator';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetUser } from './decorators/get-user.decorator';
 import { User } from './entities/auth.entity';
 import { GoogleToken } from './dto/google-token.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -49,6 +50,34 @@ export class AuthController {
   loginGoogle(@Body() googleToken: GoogleToken) {
     return this.authService.loginGoogle(googleToken);
   }
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Authenticated user profile updated successfully. Only name, lastName and avatar are applied.',
+    type: User,
+    schema: {
+      example: {
+        id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        name: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        isActive: true,
+        roles: ['user'],
+        avatar: 'https://example.com/avatar.png',
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Invalid request body.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized: authentication required' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error while patching user' })
+  @Patch('user')
+  @Auth()
+  patchUser(@Body() updateUserDto: UpdateUserDto, @GetUser() user: User) {
+    return this.authService.patchUser(updateUserDto, user);
+  }
+
+
 
   @ApiResponse({ status: 200, description: 'User retrieved successfully' })
   @ApiResponse({ status: 400, description: 'Invalid user id' })
