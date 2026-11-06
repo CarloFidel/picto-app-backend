@@ -33,6 +33,21 @@ export class AuthService {
       const avatarUrl = avatar ?? '';
       const userRoles = roles?.length ? roles : [ValidRoles.user];
 
+      const existUser = await this.userRepository.findOne({ where: { email: userData.email } });
+      if (existUser && !existUser.isActive) {
+        await this.userRepository.update(existUser.id, { isActive: true });
+        return {
+          ...existUser,
+          token: this.getJwToken({
+            email: existUser.email,
+            id: existUser.id,
+            name: existUser.name,
+            lastName: existUser.lastName,
+            roles: existUser.roles!,
+          }),
+        }
+      }
+
 
       const user = this.userRepository.create({
         ...userData,
@@ -118,7 +133,7 @@ export class AuthService {
       throw new BadRequestException(`No user with ${user.id} founded`);
     }
 
-    await this.userRepository.delete({ id: user.id });
+    await this.userRepository.update(existUser.id, { isActive: false });
     return {
       status: 200,
       message: 'Deleted succesfull',
@@ -222,7 +237,7 @@ export class AuthService {
     });
 
     const user = await this.userRepository.findOne({ where: { email: userEmail } });
-    
+
     if (!user) throw new NotFoundException(`User with ${userEmail} not found`);
     return {
       ...user,
