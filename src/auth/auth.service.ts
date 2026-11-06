@@ -222,8 +222,19 @@ export class AuthService {
     });
 
     const user = await this.userRepository.findOne({ where: { email: userEmail } });
+    
+    if (!user) throw new NotFoundException(`User with ${userEmail} not found`);
+    return {
+      ...user,
+      token: this.getJwToken({
+        email: user.email,
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        roles: user.roles!,
+      }),
+    }
 
-    return user
   }
 
   private getJwToken(payload: JwtPayload) {
