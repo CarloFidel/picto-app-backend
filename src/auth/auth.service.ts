@@ -18,6 +18,7 @@ import { GoogleToken } from './dto/google-token.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { ValidRoles } from './interfaces/roles.interfaces';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { truncate } from 'node:fs';
 
 @Injectable()
 export class AuthService {
@@ -33,8 +34,9 @@ export class AuthService {
       const avatarUrl = avatar ?? '';
       const userRoles = roles?.length ? roles : [ValidRoles.user];
 
-      const existUser = await this.userRepository.findOne({ where: { email: userData.email } });
-      if (existUser && !existUser.isActive) {
+      const existUser = await this.userRepository.findOne({ where: { email: createAuthDto.email } });
+
+      if (existUser && existUser.isActive === false) {
         await this.userRepository.update(existUser.id, { isActive: true });
         return {
           ...existUser,
@@ -89,6 +91,7 @@ export class AuthService {
         lastName: true,
         id: true,
         roles: true,
+        isActive: true
       },
     });
 
@@ -97,6 +100,10 @@ export class AuthService {
 
     if (!user.password || !bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('La contraseña es incorrecta');
+
+    if (user.isActive === false) {
+      throw new NotFoundException('User not exists');
+    }
 
     return {
       id: user.id,
