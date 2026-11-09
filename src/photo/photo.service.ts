@@ -11,6 +11,7 @@ import { CreatePhotoDto } from './dto/create-photo.dto';
 import { Repository } from 'typeorm';
 import { Photo } from './entities/photo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+
 @Injectable()
 export class PhotoService {
   constructor(
@@ -18,12 +19,13 @@ export class PhotoService {
     private readonly cloudinaryClient: typeof cloudinary,
     @InjectRepository(Photo)
     private readonly photoRepostory: Repository<Photo>,
-  ) {}
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) { }
 
   async uploadImage(
     file: Express.Multer.File,
-    user: User,
-    createPhotoDto: CreatePhotoDto,
+
   ): Promise<UploadApiResponse> {
     const uploadResult = await new Promise<UploadApiResponse>(
       (resolve, reject) => {
@@ -37,6 +39,16 @@ export class PhotoService {
         stream.end(file.buffer);
       },
     );
+
+
+    return uploadResult;
+
+  }
+
+  async saveImage(file: Express.Multer.File, user: User, createPhotoDto: CreatePhotoDto) {
+
+    const url = await this.uploadImage(file)
+
     try {
       const exisiting = await this.findAllfromUser(user);
 
@@ -48,16 +60,37 @@ export class PhotoService {
 
       const photo = this.photoRepostory.create({
         ...createPhotoDto,
-        url: uploadResult.secure_url ?? uploadResult.url,
+        url: url.secure_url ?? url.url,
         user,
       });
 
       await this.photoRepostory.save(photo);
 
-      return uploadResult;
+      return url;
+
     } catch (error: any) {
       this.handleDBError(error);
     }
+  }
+
+  async uploadAvatar(file: Express.Multer.File, user: User) {
+
+    const url = await this.uploadImage(file)
+
+    if (!url) {
+      throw new BadRequestException('Error uploading image');
+    }
+
+    const existingUser = await this.userRepository.findOneBy({ id: user.id });
+
+    if (!existingUser) {
+      throw new NotFoundException(`No user found with id ${user.id}`);
+    }
+
+    await this.userRepository.update(user.id, { avatar: url.secure_url ?? url.url });
+
+    return url.secure_url;
+
   }
 
   async findAllfromUser(user: User) {
@@ -91,7 +124,7 @@ export class PhotoService {
       message: 'Borrado con éxito',
     };
   }
-  
+
   async edit(createPhotoDto: CreatePhotoDto, photoId: string) {
     const photo = await this.photoRepostory.findOneBy({ id: photoId });
 

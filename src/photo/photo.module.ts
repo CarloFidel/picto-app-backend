@@ -11,4 +11,4 @@ import { AuthModule } from '../auth/auth.module';
   providers: [PhotoService],
   imports: [CloudinaryModule, TypeOrmModule.forFeature([Photo]), AuthModule],
 })
-export class PhotoModule {}
+export class PhotoModule { }

@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { UploadApiResponse } from 'cloudinary';
 
 export class UpdateUserDto {
   @ApiPropertyOptional({ description: 'First name of the user', example: 'John' })

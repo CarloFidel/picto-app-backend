@@ -19,6 +19,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { ValidRoles } from './interfaces/roles.interfaces';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { truncate } from 'node:fs';
+import { PhotoService } from '../photo/photo.service';
 
 @Injectable()
 export class AuthService {
@@ -258,6 +259,8 @@ export class AuthService {
     }
 
   }
+
+
 
   private getJwToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);

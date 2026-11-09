@@ -73,7 +73,7 @@ export class PhotoController {
       throw new BadRequestException('No file uploaded');
     }
 
-    const uploadResult: UploadApiResponse = await this.photoService.uploadImage(
+    const uploadResult: UploadApiResponse = await this.photoService.saveImage(
       file,
       user,
       createPhotoDto,
@@ -83,6 +83,24 @@ export class PhotoController {
       url: uploadResult.secure_url,
       message: 'Picture loaded correctly',
     };
+  }
+
+  @Post('avatar')
+  @Auth()
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: fileFilter,
+      storage: memoryStorage(),
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  async uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUser() user: User,
+  ) {
+    return this.photoService.uploadAvatar(file, user);
   }
 
   @ApiResponse({
@@ -144,3 +162,4 @@ export class PhotoController {
     return this.photoService.edit(createPhotoDto, photoId);
   }
 }
+
