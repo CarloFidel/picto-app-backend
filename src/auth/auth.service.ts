@@ -38,7 +38,10 @@ export class AuthService {
       const existUser = await this.userRepository.findOne({ where: { email: createAuthDto.email } });
 
       if (existUser && existUser.isActive === false) {
-        await this.userRepository.update(existUser.id, { isActive: true });
+        if ( password !== existUser.password) {
+          throw new UnauthorizedException('If you want to recover your old account, you need to provide the correct password');
+        }
+        await this.userRepository.update(existUser.id, { isActive: true, password: bcrypt.hashSync(password, 10) });
         return {
           ...existUser,
           token: this.getJwToken({
@@ -159,14 +162,30 @@ export class AuthService {
     });
 
     if (!ticket) {
-      throw new UnauthorizedException('Problemas con Google Auth')
+      throw new UnauthorizedException('Problems with Google Auth')
     }
 
     const payload = ticket.getPayload()
 
 
     if (!payload?.sub || !payload.email || payload.email_verified !== true) {
-      throw new UnauthorizedException('Token de Google inválido');
+      throw new UnauthorizedException('Invalid Google Token');
+    }
+
+    const existUser = await this.userRepository.findOne({ where: { email: payload.email } });
+
+    if (existUser && existUser.isActive === false) {
+      await this.userRepository.update(existUser.id, { isActive: true, password: null });
+      return {
+        ...existUser,
+        token: this.getJwToken({
+          email: existUser.email,
+          id: existUser.id,
+          name: existUser.name,
+          lastName: existUser.lastName,
+          roles: existUser.roles!,
+        }),
+      };
     }
 
     const userData = {
