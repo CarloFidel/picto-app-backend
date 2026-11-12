@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -35,15 +36,30 @@ export class AuthService {
       const avatarUrl = avatar ?? '';
       const userRoles = roles?.length ? roles : [ValidRoles.user];
 
-      const existUser = await this.userRepository.findOne({ where: { email: createAuthDto.email } });
+      const existUser = await this.userRepository.findOne({ 
+        where: { email: createAuthDto.email }, 
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          lastName: true,
+          roles: true,
+          isActive: true,
+          password: true,
+        },
+      });
 
       if (existUser && existUser.isActive === false) {
-        if ( password !== existUser.password) {
+        if ( !existUser.password || !bcrypt.compareSync(password, existUser.password)) {
           throw new UnauthorizedException('If you want to recover your old account, you need to provide the correct password');
         }
-        await this.userRepository.update(existUser.id, { isActive: true, password: bcrypt.hashSync(password, 10) });
+        await this.userRepository.update(existUser.id, { isActive: true});
         return {
-          ...existUser,
+          id: existUser.id,
+          email: existUser.email,
+          name: existUser.name,
+          lastName: existUser.lastName,
+          roles: existUser.roles,
           token: this.getJwToken({
             email: existUser.email,
             id: existUser.id,
