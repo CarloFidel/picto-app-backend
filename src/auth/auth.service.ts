@@ -95,6 +95,7 @@ export class AuthService {
         }),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       this.handleDBError(error);
     }
   }
@@ -294,7 +295,6 @@ export class AuthService {
     }
 
   }
-
 
 
   private getJwToken(payload: JwtPayload) {
