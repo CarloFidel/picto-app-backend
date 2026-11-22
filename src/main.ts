@@ -18,9 +18,10 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Picto RESTful API')
     .setDescription(
-      'API for managing pictograms, images, and visual scheduling in the Picto application.',
+      'API for authentication, pictograms, images, photos, articles, calendars, and visual scheduling in the Picto application.',
     )
     .setVersion('1.0')
+    .addTag('auth', 'User registration, login, Google authentication, profile updates, and account deactivation')
     .addTag('pictograms')
     .addBearerAuth()
     .build();

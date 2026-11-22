@@ -9,7 +9,13 @@ export class GoogleToken {
   @IsString()
   token!: string;
 
-  @ApiProperty({ description: 'Roles assigned to the user', example: ['user'], required: false })
+  @ApiProperty({
+    description: 'Roles assigned when a new Google account is created. Defaults to no explicit role.',
+    example: ['user'],
+    isArray: true,
+    enum: ['user', 'therapist'],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

@@ -40,8 +40,10 @@ export class User {
   email!: string;
 
   @ApiProperty({
-    description: 'Hashed password for the user account',
-    example: 'Password1',
+    description: 'Hashed password or null for accounts authenticated exclusively by Google.',
+    example: null,
+    nullable: true,
+    writeOnly: true,
   })
   @Column('text', {
     nullable: true,
@@ -49,6 +51,11 @@ export class User {
   })
   password!: string | null;
 
+  @ApiProperty({
+    description: 'Google subject identifier, or null for password-authenticated accounts.',
+    example: null,
+    nullable: true,
+  })
   @Column('text', {unique: true, nullable: true, name: 'google_sub'})
   googleSub!: string | null;
 
@@ -66,6 +73,11 @@ export class User {
   @IsArray()
   roles?: string[];
 
+  @ApiProperty({
+    description: 'Avatar image URL',
+    example: 'https://example.com/avatar.png',
+    required: false,
+  })
   @Column('text')
   @IsString()
   @IsOptional()

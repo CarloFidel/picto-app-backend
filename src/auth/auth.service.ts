@@ -278,7 +278,6 @@ export class AuthService {
     await this.userRepository.update(existUser.id, {
       name: updateUserDto.name,
       lastName: updateUserDto.lastName,
-      avatar: existUser.avatar,
     });
 
     const user = await this.userRepository.findOne({ where: { email: userEmail } });

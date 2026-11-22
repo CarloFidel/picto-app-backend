@@ -37,12 +37,23 @@ export class CreateUserDto {
   })
   password!: string;
 
-  @ApiProperty({ description: 'Roles assigned to the user', example: ['user'], required: false })
+  @ApiProperty({
+    description: 'Roles assigned to the user. Defaults to ["user"] when omitted.',
+    example: ['user'],
+    isArray: true,
+    enum: ['user', 'therapist'],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   roles?: string[];
 
+  @ApiProperty({
+    description: 'Optional avatar URL.',
+    example: 'https://example.com/avatar.png',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   avatar?: string;
