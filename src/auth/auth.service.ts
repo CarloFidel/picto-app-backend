@@ -49,6 +49,7 @@ export class AuthService {
         },
       });
 
+
       if (existUser && existUser.isActive === false) {
         if ( !existUser.password || !bcrypt.compareSync(password, existUser.password)) {
           throw new UnauthorizedException('If you want to recover your old account, you need to provide the correct password');
@@ -61,7 +62,7 @@ export class AuthService {
           lastName: existUser.lastName,
           roles: existUser.roles,
           avatar: existUser.avatar,
-          
+
           token: this.getJwToken({
             email: existUser.email,
             id: existUser.id,
