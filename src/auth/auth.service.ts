@@ -112,7 +112,8 @@ export class AuthService {
         lastName: true,
         id: true,
         roles: true,
-        isActive: true
+        isActive: true,
+        avatar: true
       },
     });
 
@@ -132,6 +133,7 @@ export class AuthService {
       lastName: user.lastName,
       email: user.email,
       roles: user.roles,
+      avatar: user.avatar,
 
       token: this.getJwToken({
         email: user.email,
@@ -282,7 +284,11 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({ where: { email: userEmail } });
 
+    console.log('user', user?.avatar);
+
     if (!user) throw new NotFoundException(`User with ${userEmail} not found`);
+
+
     return {
       ...user,
       token: this.getJwToken({
