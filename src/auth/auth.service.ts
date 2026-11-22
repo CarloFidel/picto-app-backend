@@ -222,6 +222,7 @@ export class AuthService {
         lastName: true,
         id: true,
         roles: true,
+        avatar: true
       },
     });
 
@@ -253,7 +254,7 @@ export class AuthService {
         lastName: user.lastName,
         email: user.email,
         roles: user.roles,
-        avatar: userData.avatar,
+        avatar: user.avatar,
 
         token: this.getJwToken({
           email: user.email,
