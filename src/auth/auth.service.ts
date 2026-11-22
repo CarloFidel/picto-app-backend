@@ -45,7 +45,7 @@ export class AuthService {
           lastName: true,
           roles: true,
           isActive: true,
-          password: true,
+          avatar: true
         },
       });
 
@@ -60,6 +60,8 @@ export class AuthService {
           name: existUser.name,
           lastName: existUser.lastName,
           roles: existUser.roles,
+          avatar: existUser.avatar,
+          
           token: this.getJwToken({
             email: existUser.email,
             id: existUser.id,
