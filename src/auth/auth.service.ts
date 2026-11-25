@@ -45,7 +45,8 @@ export class AuthService {
           lastName: true,
           roles: true,
           isActive: true,
-          avatar: true
+          avatar: true,
+          password: true
         },
       });
 
