@@ -19,8 +19,8 @@ import { GoogleToken } from './dto/google-token.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { ValidRoles } from './interfaces/roles.interfaces';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { truncate } from 'node:fs';
-import { PhotoService } from '../photo/photo.service';
+import { RefreshTokenPayload } from './interfaces/jwt-refrech-payloda.interface';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -36,8 +36,8 @@ export class AuthService {
       const avatarUrl = avatar ?? '';
       const userRoles = roles?.length ? roles : [ValidRoles.user];
 
-      const existUser = await this.userRepository.findOne({ 
-        where: { email: createAuthDto.email }, 
+      const existUser = await this.userRepository.findOne({
+        where: { email: createAuthDto.email },
         select: {
           id: true,
           email: true,
@@ -52,10 +52,10 @@ export class AuthService {
 
 
       if (existUser && existUser.isActive === false) {
-        if ( !existUser.password || !bcrypt.compareSync(password, existUser.password)) {
+        if (!existUser.password || !bcrypt.compareSync(password, existUser.password)) {
           throw new UnauthorizedException('If you want to recover your old account, you need to provide the correct password');
         }
-        await this.userRepository.update(existUser.id, { isActive: true});
+        await this.userRepository.update(existUser.id, { isActive: true });
         return {
           id: existUser.id,
           email: existUser.email,
@@ -71,6 +71,11 @@ export class AuthService {
             lastName: existUser.lastName,
             roles: existUser.roles!,
           }),
+          refreshToken: this.getJwtRefreshToken({
+            id: existUser.id,
+            jti: randomUUID(),
+            type: 'refresh',
+          })
         }
       }
 
@@ -97,6 +102,11 @@ export class AuthService {
           lastName: user.lastName,
           roles: user.roles!,
         }),
+        refreshToken: this.getJwtRefreshToken({
+          id: user.id,
+          jti: randomUUID(),
+          type: 'refresh',
+        })
       };
     } catch (error: any) {
       if (error instanceof HttpException) throw error;
@@ -146,6 +156,11 @@ export class AuthService {
         lastName: user.lastName,
         roles: user.roles!,
       }),
+      refreshToken: this.getJwtRefreshToken({
+        id: user.id,
+        jti: randomUUID(),
+        type: 'refresh',
+      })
     };
   }
 
@@ -250,6 +265,11 @@ export class AuthService {
           lastName: newUser.lastName,
           roles: newUser.roles!,
         }),
+        refreshToken: this.getJwtRefreshToken({
+          id: newUser.id,
+          jti: randomUUID(),
+          type: 'refresh',
+        })
       };
 
     } else {
@@ -269,6 +289,11 @@ export class AuthService {
           lastName: user.lastName,
           roles: user.roles!,
         }),
+        refreshToken: this.getJwtRefreshToken({
+          id: user.id,
+          jti: randomUUID(),
+          type: 'refresh',
+        })
       };
     }
   }
@@ -306,10 +331,26 @@ export class AuthService {
 
   }
 
-
   private getJwToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
     return token;
+  }
+
+  private getJwtRefreshToken(payload: RefreshTokenPayload) {
+    const refreshToken = this.jwtService.sign(
+      {
+        id: payload.id,
+        jti: randomUUID(),
+        type: 'refresh',
+      },
+      {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '7d',
+
+      }
+
+    );
+    return refreshToken;
   }
 
   private handleDBError(error: any): never {
